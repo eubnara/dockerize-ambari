@@ -1,0 +1,33 @@
+services:
+  ambari-server:
+    image: eubnara/ambari-server:2.7.6.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-server
+    ports:
+      - "8080:8080"
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ambari
+      MYSQL_USER: ambari
+      MYSQL_PASSWORD: ambari
+    volumes:
+      - type: volume
+        source: ambari-mysql
+        target: /var/lib/mysql
+
+#   apache-ds:
+#     build: .
+#     image: apache-ds:latest
+#     network_mode: "host"
+#     volumes:
+#       - type: volume
+#         source: apache-ds-data
+#         target: /opt/apacheds-2.0.0.AM26
+
+volumes:
+  ambari-mysql:
+#   apache-ds-data:
