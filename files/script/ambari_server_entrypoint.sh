@@ -1,9 +1,9 @@
 #!/bin/bash
 
 while true;do
-    ping -c 1 dockerize-ambari-db-1 >/dev/null 2>&1 && break
+    curl dockerize-ambari-db-1:3306 >/dev/null 2>&1 && break
     echo "cannot contact dockerize-ambari-db-1 sleep 10s"
-    sleep 10
+    sleep 5
 done
 
 ansible-playbook /root/ansible/post_ambari_server.yml

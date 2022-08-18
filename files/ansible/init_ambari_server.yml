@@ -33,6 +33,7 @@
           - mysql-community-client
     - name: create link to mysql 8.x connector java
       ansible.builtin.file:
+        # mysql connector 8 은 5.6, 5.7 접속이 가능하다. https://www.lesstif.com/dbms/mysql-jdbc-driver-14090356.html
         src: /root/lib/mysql-connector-java-8.0.30.jar
         # /usr/share/java/mysql-connector-java.jar 라는 이름을 쓰지 않으면, server.jdbc.driver.path 설정도 필요하다.
         dest: /usr/share/java/mysql-connector-java.jar
@@ -61,6 +62,11 @@
       ansible.builtin.shell:
         cmd: ambari-server install-mpack --mpack=/usr/lib/bigtop-ambari-mpack/bgtp-ambari-mpack-1.0.0.0-SNAPSHOT-bgtp-ambari-mpack.tar.gz --verbose
       when: mpack.rc != 0
+    - name: change repo url
+      ansible.builtin.replace:
+        path: /var/lib/ambari-server/resources/mpacks/bgtp-ambari-mpack-1.0.0.0-SNAPSHOT/stacks/BGTP/1.0/repos/repoinfo.xml
+        regexp: '([ ]*<baseurl>)http://repos.bigtop.apache.org/releases/1.5.0/centos/7/\$basearch(</baseurl>.*)'
+        replace: \g<1>http://dockerize-ambari-yum-repo-1/repo\g<2>
     - name: check jce unlimited policy files
       ansible.builtin.stat:
         path: /usr/lib/jvm/java-1.8.0/jre/lib/security/policy/unlimited
@@ -79,3 +85,5 @@
         path: /etc/ambari-server/conf/ambari.properties
         regexp: '^(.*)hortonworks(.*)$'
         replace: \g<1>example\g<2>
+
+
