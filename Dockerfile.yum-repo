@@ -1,0 +1,11 @@
+FROM centos:7
+LABEL org.opencontainers.image.authors="eubnara@gmail.com"
+
+RUN yum -y install createrepo httpd vim less curl wget
+COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
+COPY yum-repo/rpms /opt/repo
+WORKDIR /opt/repo
+RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/hadoop-3.3.4-1.el7.x86_64.rpm && \
+    createrepo .
+
+CMD [ "httpd", "-D", "FOREGROUND" ]

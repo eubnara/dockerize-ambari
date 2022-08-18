@@ -18,6 +18,11 @@ services:
       - type: volume
         source: ambari-mysql
         target: /var/lib/mysql
+  yum-repo:
+    image: eubnara/yum-repo:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.yum-repo
 
 #   apache-ds:
 #     build: .
