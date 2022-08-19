@@ -6,9 +6,33 @@ services:
       dockerfile: Dockerfile.ambari-server
     ports:
       - "8080:8080"
+    links:
+      - ambari-agent-1:ambari-agent-1.example.com
+      - ambari-agent-2:ambari-agent-2.example.com
+      - ambari-agent-3:ambari-agent-3.example.com
+  ambari-agent-1:
+    image: eubnara/ambari-agent:2.7.6.0.0
+    hostname: ambari-agent-1
+    domainname: example.com
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
+  ambari-agent-2:
+    image: eubnara/ambari-agent:2.7.6.0.0
+    hostname: ambari-agent-2
+    domainname: example.com
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
+  ambari-agent-3:
+    image: eubnara/ambari-agent:2.7.6.0.0
+    hostname: ambari-agent-3
+    domainname: example.com
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
   db:
     image: mysql:5.7
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ambari

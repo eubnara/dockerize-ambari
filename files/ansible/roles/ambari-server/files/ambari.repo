@@ -1,0 +1,7 @@
+[ambari-2.7.6.0]
+name=ambari Version - ambari-2.7.6.0
+baseurl=http://dockerize-ambari-yum-repo-1/repo
+path=/
+enabled=1
+gpgcheck=0
+priority=1

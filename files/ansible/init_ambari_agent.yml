@@ -1,8 +1,8 @@
 ---
-- name: Initialize ambari server
+- name: Initialize ambari agent
   hosts: localhost
   gather_facts: no
   connection: local
   roles:
     - common
-    - ambari-server
+    - ambari-agent

@@ -1,0 +1,16 @@
+FROM centos:7
+LABEL org.opencontainers.image.authors="eubnara@gmail.com"
+
+ENV LC_ALL en_US.utf8
+RUN yum -y install python3-devel.x86_64 && \
+    pip3 install --upgrade pip && \
+    pip3 install --user ansible
+ENV PATH "$PATH:/root/.local/bin"
+
+# COPY files/rpm /root/rpm
+COPY files/ansible /root/ansible
+# RUN bash -c "cd /root/rpm;curl -LO https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-agent-2.7.6.0-0.x86_64.rpm"
+
+RUN ansible-playbook /root/ansible/init_ambari_agent.yml
+
+CMD [ "/usr/sbin/sshd", "-D" ]
