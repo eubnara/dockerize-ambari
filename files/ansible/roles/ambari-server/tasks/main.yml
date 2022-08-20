@@ -11,7 +11,7 @@
 - name: install rpms for ambari server
   ansible.builtin.yum:
     name:
-      - /root/rpm/ambari-server-2.7.6.0-1.el7.noarch.rpm
+      - /root/rpm/ambari-server-2.7.6.0-2.el7.noarch.rpm
       - /root/rpm/bigtop-ambari-mpack-2.7.6.0-0.el7.noarch.rpm
       - /root/rpm/bigtop-groovy-2.5.4-1.el7.noarch.rpm
       - /root/rpm/bigtop-jsvc-1.2.4-1.el7.x86_64.rpm
