@@ -1,0 +1,8 @@
+---
+- name: Initialize ambari agent
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  roles:
+    - common
+    - ambari-agent

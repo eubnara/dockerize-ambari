@@ -21,3 +21,5 @@ CMD ["bash", "/opt/entrypoint.sh"]
 # TODO: https://stackoverflow.com/questions/29305197/how-to-add-posixaccount-and-posixgroup-attributes-in-apacheds
 
 # TODO: https://directory.apache.org/apacheds/kerberos-ug/4.2-authenticate-studio.html
+
+# TODO: apacheds.jks self-signed certificate 세팅하기.

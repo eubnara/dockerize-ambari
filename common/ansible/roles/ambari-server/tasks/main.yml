@@ -1,0 +1,95 @@
+---
+- name: copy self-signed certificate
+  ansible.builtin.copy:
+    src: public.cert
+    dest: /usr/lib/jvm/java-1.8.0-openjdk/jre/lib/security
+- name: trust self-signed certificate
+  ansible.builtin.shell:
+    cmd: keytool -import -noprompt -alias apacheds -file public.cert -keystore cacerts -storepass changeit
+    chdir: /usr/lib/jvm/java-1.8.0-openjdk/jre/lib/security
+- name: create ssh dir
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+- name: setup ssh private key
+  ansible.builtin.copy:
+    src: id_rsa.ambari
+    dest: /root/.ssh/id_rsa
+    mode: 0600
+- name: install rpms for ambari server
+  ansible.builtin.yum:
+    name:
+      - /root/rpm/ambari-server-2.7.6.0-3.el7.noarch.rpm
+      - /root/rpm/bigtop-ambari-mpack-2.7.6.0-0.el7.noarch.rpm
+      - /root/rpm/bigtop-groovy-2.5.4-1.el7.noarch.rpm
+      - /root/rpm/bigtop-jsvc-1.2.4-1.el7.x86_64.rpm
+      - /root/rpm/bigtop-utils-3.2.0-1.el7.noarch.rpm
+      - /root/rpm/mysql80-community-release-el7-6.noarch.rpm
+    state: present
+- name: import gpg key for mysql
+  ansible.builtin.shell:
+    cmd: rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+- name: install mysql-community-client
+  ansible.builtin.yum:
+    name:
+      - mysql-community-client
+- name: create link to mysql 8.x connector java
+  ansible.builtin.file:
+    # mysql connector 8 은 5.6, 5.7 접속이 가능하다. https://www.lesstif.com/dbms/mysql-jdbc-driver-14090356.html
+    src: /root/lib/mysql-connector-java-8.0.30.jar
+    # /usr/share/java/mysql-connector-java.jar 라는 이름을 쓰지 않으면, server.jdbc.driver.path 설정도 필요하다.
+    dest: /usr/share/java/mysql-connector-java.jar
+    state: link
+- name: setup jdbc for ambari
+  ansible.builtin.shell:
+    cmd: ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
+- name: add java.home to ambari.properties
+  ansible.builtin.lineinfile:
+    path: /etc/ambari-server/conf/ambari.properties
+    search_string: 'java.home'
+    line: java.home=/usr/lib/jvm/java-1.8.0-openjdk
+- name: setup db for ambari
+  ansible.builtin.shell:
+    cmd: ambari-server setup --silent --database=mysql --databasehost=dockerize-ambari-db-1 --databaseport=3306  --databasename=ambari --databaseusername=ambari --databasepassword=ambari
+- name: change jdbc driver in ambari.properties (to support mysql 8.x)
+  ansible.builtin.replace:
+    path: /etc/ambari-server/conf/ambari.properties
+    regexp: '^(.*)=com\.mysql\.jdbc\.Driver'
+    replace: \g<1>=com.mysql.cj.jdbc.Driver
+- name: check mpack
+  ansible.builtin.shell: ls /var/lib/ambari-server/resources/stacks/BGTP
+  register: mpack
+  ignore_errors: yes
+- name: install mpack
+  ansible.builtin.shell:
+    cmd: ambari-server install-mpack --mpack=/usr/lib/bigtop-ambari-mpack/bgtp-ambari-mpack-1.0.0.0-SNAPSHOT-bgtp-ambari-mpack.tar.gz --verbose
+  when: mpack.rc != 0
+- name: change repo url
+  ansible.builtin.replace:
+    path: /var/lib/ambari-server/resources/mpacks/bgtp-ambari-mpack-1.0.0.0-SNAPSHOT/stacks/BGTP/1.0/repos/repoinfo.xml
+    regexp: '([ ]*<baseurl>)http://repos.bigtop.apache.org/releases/1.5.0/centos/7/\$basearch(</baseurl>.*)'
+    replace: \g<1>http://dockerize-ambari-yum-repo-1/repo\g<2>
+- name: copy ambari.repo
+  ansible.builtin.copy:
+    src: ambari.repo
+    dest: /etc/yum.repos.d/ambari.repo
+- name: check jce unlimited policy files
+  ansible.builtin.stat:
+    path: /usr/lib/jvm/java-1.8.0/jre/lib/security/policy/unlimited
+  register: jce_files
+- name: Fail when jce unlimited policy files not exist
+  ansible.builtin.fail:
+    msg: There is no JCE unlimited strength policy files
+  when: jce_files.stat.exists == false
+- name: set crypto.policy unlimited
+  ansible.builtin.lineinfile:
+    path: /usr/lib/jvm/java-1.8.0/jre/lib/security/java.security
+    regexp: '^crypto\.policy='
+    line: crypto.policy=unlimited
+- name: remove hortonworks
+  ansible.builtin.replace:
+    path: /etc/ambari-server/conf/ambari.properties
+    regexp: '^(.*)hortonworks(.*)$'
+    replace: \g<1>example\g<2>
+
+

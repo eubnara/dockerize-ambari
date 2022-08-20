@@ -1,0 +1,19 @@
+---
+- name: Somethings to do after launching the container
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - name: run DDL
+      ansible.builtin.shell:
+      # Ambari-DDL-MySQL-CREATE.sql only changed groups to `groups`
+        cmd: |
+          MYSQL_COMMAND="mysql --host=dockerize-ambari-db-1 --port=3306 --user=ambari --password=ambari ambari"
+          SQL_FILE="/root/script/Ambari-DDL-MySQL-for-8.x-CREATE.sql"
+          TABLE=`grep '^CREATE TABLE' $SQL_FILE | head -1 | awk -F"CREATE TABLE"  '{print $2}' | awk -F"(" '{print $1}'`
+          echo "DESC $TABLE;" | $MYSQL_COMMAND > /dev/null 2>&1
+          if [[ "$?" -eq "0" ]];then
+            exit 0
+          fi
+          echo "SOURCE $SQL_FILE;  " | $MYSQL_COMMAND || exit 1
