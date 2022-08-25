@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.ambari-server
     ports:
+      - "5005:5005" # for remote jvm debugging
       - "8080:8080"
   ambari-agent-1:
     image: eubnara/ambari-agent:2.7.6.0.0
