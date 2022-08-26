@@ -5,8 +5,8 @@ RUN yum -y install createrepo httpd vim less curl wget
 COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
 COPY yum-repo/rpm /opt/repo
 WORKDIR /opt/repo
-RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/hadoop-3.3.4-1.el7.x86_64.rpm && \
-    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-server-2.7.6.0-6.el7.noarch.rpm && \
+RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/hadoop-3.3.4-2.el7.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-server-2.7.6.0-8.el7.noarch.rpm && \
     createrepo .
 
 CMD [ "httpd", "-D", "FOREGROUND" ]

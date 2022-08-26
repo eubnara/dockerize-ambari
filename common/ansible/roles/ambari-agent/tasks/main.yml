@@ -32,3 +32,7 @@
     path: /etc/ssh/sshd_config
     regexp: '#Port 22'
     replace: Port 22
+- name: install libisal for hadoop ec
+  ansible.builtin.copy:
+    src: libisal.so.2.0.30
+    dest: /usr/lib64/libisal.so.2
