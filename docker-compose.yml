@@ -1,5 +1,6 @@
 services:
   ambari-server:
+    init: true
     image: eubnara/ambari-server:2.7.6.0.0
     hostname: ambari-server.example.com
     build:
@@ -9,24 +10,28 @@ services:
       - "5005:5005" # for remote jvm debugging
       - "8080:8080"
   ambari-agent-1:
+    init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-1.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
   ambari-agent-2:
+    init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-2.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
   ambari-agent-3:
+    init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-3.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
   db:
+    init: true
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -43,15 +48,23 @@ services:
       context: .
       dockerfile: Dockerfile.yum-repo
 
-#   apache-ds:
-#     build: .
-#     image: apache-ds:latest
-#     network_mode: "host"
-#     volumes:
-#       - type: volume
-#         source: apache-ds-data
-#         target: /opt/apacheds-2.0.0.AM26
+  apache-ds:
+    init: true
+    hostname: apache-ds.example.com
+    image: eubnara/apache-ds:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.apacheds
+    ports:
+      - "10389:10389"
+      - "10636:10636"
+      - "60088:60088"
+      - "60464:60464"
+    volumes:
+      - type: volume
+        source: apache-ds-data
+        target: /opt
 
 volumes:
   ambari-mysql:
-#   apache-ds-data:
+  apache-ds-data:

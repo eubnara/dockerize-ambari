@@ -9,8 +9,9 @@ ENV PATH "$PATH:/root/.local/bin"
 
 # COPY common/rpm /root/rpm
 COPY common/ansible /root/ansible
+COPY common/script /root/script
 # RUN bash -c "cd /root/rpm;curl -LO https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-agent-2.7.6.0-0.x86_64.rpm"
 
 RUN ansible-playbook /root/ansible/init_ambari_agent.yml
 
-CMD [ "/usr/sbin/sshd", "-D" ]
+CMD [ "bash", "/root/script/ambari_agent_entrypoint.sh" ]

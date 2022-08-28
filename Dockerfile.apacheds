@@ -1,25 +1,14 @@
-FROM ubuntu:22.04
+FROM centos:7
+LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
-RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk vim wget curl less net-tools && \
-    curl https://dlcdn.apache.org//directory/apacheds/dist/2.0.0.AM26/apacheds-2.0.0.AM26.tar.gz | tar -xvz -C /opt
+ENV LC_ALL en_US.utf8
+RUN yum -y install python3-devel.x86_64 && \
+    pip3 install --upgrade pip && \
+    pip3 install --user ansible
+ENV PATH "$PATH:/root/.local/bin"
 
-COPY entrypoint.sh /opt/entrypoint.sh
-CMD ["bash", "/opt/entrypoint.sh"]
+COPY common/ansible /root/ansible
+RUN ansible-playbook /root/ansible/init_apacheds.yml
 
-# TODO: users, groups organizational unit ldif 자동화
-# TODO: root ldif 자동화
-
-
-# TODO: Apache directory studio 로 설정
-
-# TODO: 자동으로 kerberos server 까지 세팅하고 띄울 방법은?
-# TODO: kadmin 명령을 쉽게날릴 컨테이너도 세팅 krb5.conf 까지 세팅하고?
-
-# TODO: ou=users,dc=example,dc=com 세팅
-
-# TODO: https://stackoverflow.com/questions/29305197/how-to-add-posixaccount-and-posixgroup-attributes-in-apacheds
-
-# TODO: https://directory.apache.org/apacheds/kerberos-ug/4.2-authenticate-studio.html
-
-# TODO: apacheds.jks self-signed certificate 세팅하기.
+COPY common/script/apacheds_entrypoint.sh /opt/apacheds_entrypoint.sh
+CMD ["bash", "/opt/apacheds_entrypoint.sh"]
