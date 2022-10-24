@@ -2,11 +2,15 @@
 - name: copy self-signed certificate
   ansible.builtin.copy:
     src: public.cert
-    dest: /usr/lib/jvm/java-1.8.0-openjdk/jre/lib/security
+    dest: /etc/pki/ca-trust/source/anchors
 - name: trust self-signed certificate
-  ansible.builtin.shell:
-    cmd: keytool -import -noprompt -alias apacheds -file public.cert -keystore cacerts -storepass changeit
-    chdir: /usr/lib/jvm/java-1.8.0-openjdk/jre/lib/security
+  ansible.builtin.shell: |
+    update-ca-trust && /usr/bin/p11-kit extract \
+    --format=java-cacerts \
+    --filter=certificates \
+    --overwrite \
+    --purpose server-auth \
+    /etc/pki/ca-trust/extracted/java/cacerts
 - name: create ssh dir
   ansible.builtin.file:
     path: /root/.ssh
