@@ -1,0 +1,39 @@
+- name: Install keystore for ssl
+  ansible.builtin.copy:
+    src: apacheds.jks
+    dest: /opt/apacheds.jks
+    mode: "0700"
+- name: Copy ldif
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /opt
+    mode: "0644"
+  with_fileglob:
+    - '*.ldif'
+- name: Install apacheds
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl https://dlcdn.apache.org//directory/apacheds/dist/{{ APACHEDS_VERSION }}/apacheds-{{ APACHEDS_VERSION }}.tar.gz | tar -xvz -C /opt && \
+    ln -s /opt/apacheds-{{ APACHEDS_VERSION }} /opt/apacheds
+  changed_when: true
+- name: Start apacheds
+  ansible.builtin.command: /opt/apacheds/bin/apacheds.sh default start
+  changed_when: true
+- name: Check apacheds ready
+  ansible.builtin.shell: ldapsearch -H ldap://localhost:10389 -x  -b dc=example,dc=com '(&(objectClass=domain))'
+  register: check_apacheds
+  until: check_apacheds is not failed
+  retries: 10
+  delay: 3
+  changed_when: false
+- name: Initialize apacheds with preconfigured settings
+  ansible.builtin.shell: |
+    ldapdelete -H ldap://localhost:10389 -w secret -D "uid=admin,ou=system" -r dc=example,dc=com && \
+    ldapdelete -H ldap://localhost:10389 -w secret -D "uid=admin,ou=system" -r ads-directoryServiceId=default,ou=config && \
+    ldapmodify -H ldap://localhost:10389 -D "uid=admin,ou=system" -w secret -a -f /opt/example-com-backup-sorted.ldif && \
+    ldapmodify -H ldap://localhost:10389 -D "uid=admin,ou=system" -w secret -a -f /opt/default-instance-backup-sorted.ldif
+  changed_when: true
+- name: Restart apacheds
+  ansible.builtin.shell: /opt/apacheds/bin/apacheds.sh default stop; /opt/apacheds/bin/apacheds.sh default start
+  changed_when: true
+...

@@ -1,8 +1,18 @@
 #!/bin/bash
 
-while true;do
-    curl dockerize-ambari-db-1:3306 >/dev/null 2>&1 && break
-    echo "cannot contact dockerize-ambari-db-1 sleep 10s"
+while true; do
+    success=1
+    for target in dockerize-ambari-db-1:3306 dockerize-ambari-yum-repo-1; do
+        curl $target >/dev/null 2>&1
+        if [[ "$?" != "0" ]]; then
+            success=0
+            echo "cannot contact $target sleep and try again"
+            break
+        fi
+    done
+    if [[ "$success" == "1" ]]; then
+        break
+    fi
     sleep 5
 done
 

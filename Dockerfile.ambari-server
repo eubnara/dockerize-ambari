@@ -11,7 +11,6 @@ COPY yum-repo/rpm /root/rpm
 COPY common/ansible /root/ansible
 COPY common/script /root/script
 COPY common/lib /root/lib
-RUN bash -c "cd /root/rpm;curl -LO https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-server-2.7.6.0-8.el7.noarch.rpm"
 
 RUN ansible-playbook /root/ansible/init_ambari_server.yml
 

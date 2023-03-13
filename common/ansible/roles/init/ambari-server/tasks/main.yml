@@ -1,0 +1,39 @@
+---
+- name: Copy self-signed certificate
+  ansible.builtin.copy:
+    src: public.cert
+    dest: /etc/pki/ca-trust/source/anchors
+    mode: "0600"
+- name: Trust self-signed certificate
+  ansible.builtin.shell: |
+    update-ca-trust && /usr/bin/p11-kit extract \
+    --format=java-cacerts \
+    --filter=certificates \
+    --overwrite \
+    --purpose server-auth \
+    /etc/pki/ca-trust/extracted/java/cacerts
+  changed_when: true
+- name: Create ssh dir
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    mode: "0700"
+- name: Setup ssh private key
+  ansible.builtin.copy:
+    src: id_rsa.ambari
+    dest: /root/.ssh/id_rsa
+    mode: "0600"
+- name: Check jce unlimited policy files
+  ansible.builtin.stat:
+    path: /usr/lib/jvm/java-1.8.0/jre/lib/security/policy/unlimited
+  register: jce_files
+- name: Fail when jce unlimited policy files not exist
+  ansible.builtin.fail:
+    msg: There is no JCE unlimited strength policy files
+  when: not jce_files.stat.exists
+- name: Set crypto.policy unlimited
+  ansible.builtin.lineinfile:
+    path: /usr/lib/jvm/java-1.8.0/jre/lib/security/java.security
+    regexp: '^crypto\.policy='
+    line: crypto.policy=unlimited
+...

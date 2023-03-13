@@ -1,0 +1,26 @@
+---
+- name: Install necessary or useful packages
+  ansible.builtin.yum:
+    name:
+      - java-1.8.0-openjdk-devel.x86_64
+      - curl
+      - wget
+      - less
+      - vim
+      - openssh-clients
+      - net-tools
+      - openldap-clients
+      - which
+    state: present
+- name: Copy custom repo
+  ansible.builtin.copy:
+    src: ambari.repo
+    dest: /etc/yum.repos.d/ambari.repo
+    mode: "0644"
+- name: Ignore yum repo which cannot be connected to
+  ansible.builtin.command:
+    cmd: yum-config-manager --save --setopt=\*.skip_if_unavailable=true
+  changed_when: true
+- name: Refresh yum repo
+  ansible.builtin.command: yum clean all
+  changed_when: true

@@ -1,0 +1,17 @@
+---
+- name: Remove old bigtop mpack
+  ansible.builtin.command: ambari-server uninstall-mpack --mpack-name=bgtp-ambari-mpack
+  failed_when: false
+  changed_when: true
+- name: Get the name of mpack tar.gz
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      ls /usr/lib/bigtop-ambari-mpack/bgtp-ambari-mpack-*-*-bgtp-ambari-mpack.tar.gz | sort -r | head -n 1
+  changed_when: false
+  register: mpack_target
+- name: Install mpack
+  ansible.builtin.command:
+    cmd: ambari-server install-mpack --mpack={{ mpack_target.stdout }} --verbose
+  changed_when: true
+...

@@ -1,7 +1,14 @@
 # dockerize-ambari
 
 ```
-docker compose up --build
+$docker compose up --build --no-recreate
+
+
+
+# clean way
+$ docker compose down
+# remove related volumes if necessary
+$ docker compose up --build --no-cache
 ```
 
 

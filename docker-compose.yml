@@ -46,6 +46,7 @@ services:
     image: eubnara/yum-repo:1.0.0
     build:
       context: .
+      no_cache: true
       dockerfile: Dockerfile.yum-repo
 
   apache-ds:
