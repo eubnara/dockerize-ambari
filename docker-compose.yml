@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5001:5001" # for remote jvm debugging
   ambari-agent-2:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
@@ -23,6 +25,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5002:5002" # for remote jvm debugging
   ambari-agent-3:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
@@ -30,6 +34,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5003:5003" # for remote jvm debugging
   db:
     init: true
     image: mysql:5.7
