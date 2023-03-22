@@ -3,6 +3,7 @@ services:
     init: true
     image: eubnara/ambari-server:2.7.6.0.0
     hostname: ambari-server.example.com
+    container_name: ambari-server.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-server
@@ -13,6 +14,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-1.example.com
+    container_name: ambari-agent-1.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
@@ -22,6 +24,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-2.example.com
+    container_name: ambari-agent-2.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
@@ -31,6 +34,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-3.example.com
+    container_name: ambari-agent-3.example.com
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
