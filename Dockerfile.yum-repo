@@ -6,6 +6,7 @@ COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
 COPY yum-repo/rpm /opt/repo
 WORKDIR /opt/repo
 RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/hadoop-3.3.4-2.el7.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.2.0/hadoop_3_2_0-3.3.4-2.el7.x86_64.rpm && \
     curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-server-2.7.6.0-9.el7.noarch.rpm && \
     createrepo .
 
