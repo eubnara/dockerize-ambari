@@ -17,10 +17,15 @@ I use `eub` branch in forked repository https://github.com/eubnara/bigtop. becau
 
 ```
 $ ./gradlew realclean ambari-pkg
-# Since using BIGTOP-3.2.0 stack, "-PpkgSuffix" is needed
+# Since using BIGTOP-3.2.0 stack, "-PpkgSuffix", -PparentDir=/usr/bigtop is needed
 ## https://issues.apache.org/jira/browse/BIGTOP-3786
 ## https://issues.apache.org/jira/browse/AMBARI-25732
-$ ./gradlew realclean hadoop-pkg -PpkgSuffix
+## https://github.com/apache/bigtop/pull/1035#issuecomment-1278367103
+## https://github.com/apache/bigtop/pull/1038/files
+## https://github.com/apache/ambari/blob/e68b7d39884895aec24198a13557666c815b7107/ambari-server/src/main/resources/stacks/BIGTOP/3.2.0/configuration/cluster-env.xml#L241
+./gradlew realclean hadoop-pkg -PpkgSuffix
+$ ./gradlew realclean hadoop-pkg -PpkgSuffix -PparentDir=/usr/bigtop
+$ ./gradlew realclean zookeeper-pkg -PpkgSuffix -PparentDir=/usr/bigtop
 
 # I delploy BIGTOP-3.2.0 stack using customized mpack build
 ## https://github.com/eubnara/bigtop/commit/45c2384fc1c9e7cd9cd62195a066dee034fad25e
@@ -56,4 +61,7 @@ Admin password: `secret`
 ```
 # encryption type
 aes256-cts-hmac-sha1-96
+# and uncomment following lines in krb5-conf template
+  default_tgs_enctypes = {{encryption_types}}
+  default_tkt_enctypes = {{encryption_types}}
 ```
