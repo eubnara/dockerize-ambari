@@ -1,14 +1,14 @@
 # dockerize-ambari
 
 ```
-$docker compose up --build --no-recreate
+$ docker compose up --build --no-recreate
 
 
 
 # clean way
 $ docker compose down
 # remove related volumes if necessary
-$ docker compose up --build --no-cache
+$ docker compose up --build
 ```
 
 ## build rpms using apache/bigtop
@@ -37,6 +37,19 @@ $ ./gradew realclean bigtop-ambari-mpack-pkg
 $ git lfs track yum-repo/rpm/*
 ```
 
+
+## set repo url
+
+![configure-repo](images/configure-repo.png)
+```
+http://dockerize-ambari-yum-repo-1/repo
+```
+
+## Install Options
+
+![install-option](images/install-option.png)
+
+- Set private key using `id_rsa.ambari` file.
 
 
 ## enable kerberos
