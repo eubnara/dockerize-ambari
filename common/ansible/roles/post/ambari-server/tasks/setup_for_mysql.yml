@@ -1,12 +1,9 @@
 ---
-- name: Import gpg key for mysql
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 - name: Install mysql-community-client
   ansible.builtin.yum:
     name:
       - mysql-community-client
+    disable_gpg_check: true
 - name: Create link to mysql 8.x connector java
   ansible.builtin.file:
     # mysql connector 8 은 5.6, 5.7 접속이 가능하다. https://www.lesstif.com/dbms/mysql-jdbc-driver-14090356.html
