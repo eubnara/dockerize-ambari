@@ -3,7 +3,9 @@ services:
     init: true
     image: eubnara/ambari-server:2.7.6.0.0
     hostname: ambari-server.example.com
-    container_name: ambari-server.example.com
+    container_name: ambari-server
+    networks:
+      example.com:
     build:
       context: .
       dockerfile: Dockerfile.ambari-server
@@ -14,7 +16,9 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-1.example.com
-    container_name: ambari-agent-1.example.com
+    container_name: ambari-agent-1
+    networks:
+      example.com:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
@@ -24,7 +28,9 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-2.example.com
-    container_name: ambari-agent-2.example.com
+    container_name: ambari-agent-2
+    networks:
+      example.com:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
@@ -34,7 +40,9 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-3.example.com
-    container_name: ambari-agent-3.example.com
+    container_name: ambari-agent-3
+    networks:
+      example.com:
     build:
       context: .
       dockerfile: Dockerfile.ambari-agent
@@ -52,12 +60,16 @@ services:
       - type: volume
         source: ambari-mysql
         target: /var/lib/mysql
+    networks:
+      example.com:
   yum-repo:
     image: eubnara/yum-repo:1.0.0
     build:
       context: .
       no_cache: true
       dockerfile: Dockerfile.yum-repo
+    networks:
+      example.com:
 
   apache-ds:
     init: true
@@ -75,7 +87,13 @@ services:
       - type: volume
         source: apache-ds-data
         target: /opt
+    networks:
+      example.com:
 
 volumes:
   ambari-mysql:
   apache-ds-data:
+
+networks:
+  example.com:
+    name: example.com
