@@ -63,18 +63,19 @@ KDC hosts: apache-ds.example.com:60088
 Realm name: EXAMPLE.COM
 LDAP url: ldaps://apache-ds.example.com:10636
 Container DN: ou=services,dc=example,dc=com
-Domains: `.example.com,example.com`
+Domains: .example.com,example.com
 ```
 ```
 Kadmin host: apache-ds.example.com:60088
-Admin principal: `uid=admin,ou=system`
-Admin password: `secret`
+Admin principal: uid=admin,ou=system
+Admin password: secret
 ```
 
 ```
 # encryption type
 aes256-cts-hmac-sha1-96
 # and uncomment following lines in krb5-conf template
+  renew_lifetime = 7d
   default_tgs_enctypes = {{encryption_types}}
   default_tkt_enctypes = {{encryption_types}}
 ```
