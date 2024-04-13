@@ -8,6 +8,7 @@ RUN yum -y install python3-devel.x86_64 && \
 ENV PATH "$PATH:/root/.local/bin"
 
 COPY common/ansible /root/ansible
+COPY common/lib/apacheds-2.0.0.AM26.tar.gz /opt/
 RUN ansible-playbook /root/ansible/init_apacheds.yml
 
 COPY common/script/apacheds_entrypoint.sh /opt/apacheds_entrypoint.sh
