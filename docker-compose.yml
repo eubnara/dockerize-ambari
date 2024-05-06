@@ -3,7 +3,7 @@ services:
     init: true
     image: eubnara/ambari-server:2.7.6.0.0
     hostname: ambari-server.example.com
-    container_name: ambari-server
+    container_name: ambari-server.example.com
     networks:
       example.com:
     build:
@@ -16,7 +16,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-1.example.com
-    container_name: ambari-agent-1
+    container_name: ambari-agent-1.example.com
     networks:
       example.com:
     build:
@@ -28,7 +28,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-2.example.com
-    container_name: ambari-agent-2
+    container_name: ambari-agent-2.example.com
     networks:
       example.com:
     build:
@@ -40,7 +40,7 @@ services:
     init: true
     image: eubnara/ambari-agent:2.7.6.0.0
     hostname: ambari-agent-3.example.com
-    container_name: ambari-agent-3
+    container_name: ambari-agent-3.example.com
     networks:
       example.com:
     build:
@@ -50,7 +50,9 @@ services:
       - "5003:5003" # for remote jvm debugging
   db:
     init: true
-    image: mysql:5.7
+    image: docker.io/mysql:5.7
+    hostname: ambari-mysql.example.com
+    container_name: ambari-mysql.example.com
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ambari
@@ -64,6 +66,8 @@ services:
       example.com:
   yum-repo:
     image: eubnara/yum-repo:1.0.0
+    hostname: ambari-yum-repo.example.com
+    container_name: ambari-yum-repo.example.com
     build:
       context: .
       no_cache: true
@@ -71,28 +75,31 @@ services:
     networks:
       example.com:
 
-  apache-ds:
-    init: true
-    hostname: apache-ds.example.com
-    image: eubnara/apache-ds:1.0.0
-    build:
-      context: .
-      dockerfile: Dockerfile.apacheds
+  ipa:
+    hostname: ipa.example.com
+    container_name: ipa.example.com
+    image: docker.io/freeipa/freeipa-server:rocky-9
+    environment:
+      PASSWORD: Secret123
+    command: "-U -n example.com -r EXAMPLE.COM --dirsrv-cert-file /data/root/my-service.pfx --dirsrv-pin Secret123 --http-cert-file /data/root/my-service.pfx --http-pin Secret123 --no-pkinit"
     ports:
-      - "10389:10389"
-      - "10636:10636"
-      - "60088:60088"
-      - "60464:60464"
+      - "80:80"
+      - "443:443"
+      - "88:88"
+      - "464:464"
+      - "389:389"
+      - "636:636"
     volumes:
       - type: volume
-        source: apache-ds-data
-        target: /opt
+        source: ipa-data
+        target: /data
+      - ./common/ansible/files/my-service.pfx:/data/root/my-service.pfx:ro
     networks:
       example.com:
 
 volumes:
   ambari-mysql:
-  apache-ds-data:
+  ipa-data:
 
 networks:
   example.com:

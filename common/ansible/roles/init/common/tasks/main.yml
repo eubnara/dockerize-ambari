@@ -11,6 +11,8 @@
       - net-tools
       - openldap-clients
       - which
+      - krb5-workstation
+      - ipa-client
     state: present
 - name: Copy custom repo
   ansible.builtin.copy:
@@ -24,3 +26,17 @@
 - name: Refresh yum repo
   ansible.builtin.command: yum clean all
   changed_when: true
+- name: Configure ipa-client
+  ansible.builtin.command: ipa-client-install --principal admin@EXAMPLE.COM --password Secret123 --server ipa.example.com --realm EXAMPLE.COM --domain example.com --no-ntp --unattended
+  changed_when: true
+  ignore_errors: true
+- name: Create jks parent dir
+  ansible.builtin.file:
+    path: /etc/security/serverKeys
+    state: directory
+    mode: '0755'
+- name: Copy jks
+  ansible.builtin.copy:
+    src: my-service.jks
+    dest: /etc/security/serverKeys/keystore.jks
+    mode: "0644"

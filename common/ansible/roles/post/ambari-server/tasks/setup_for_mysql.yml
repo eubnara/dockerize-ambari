@@ -18,7 +18,7 @@
 - name: Setup db for ambari
   ansible.builtin.shell:
     cmd: |
-      ambari-server setup --silent --database=mysql --databasehost=dockerize-ambari-db-1 \
+      ambari-server setup --silent --database=mysql --databasehost=ambari-mysql.example.com \
       --databaseport=3306  --databasename=ambari --databaseusername=ambari --databasepassword=ambari
   changed_when: true
 - name: Change jdbc driver in ambari.properties (to support mysql 8.x)
@@ -31,7 +31,7 @@
   # Ambari-DDL-MySQL-CREATE.sql only changed groups to `groups`
     cmd: |
       set -o pipefail
-      MYSQL_COMMAND="mysql --host=dockerize-ambari-db-1 --port=3306 --user=ambari --password=ambari ambari"
+      MYSQL_COMMAND="mysql --host=ambari-mysql.example.com --port=3306 --user=ambari --password=ambari ambari"
       SQL_FILE="/root/script/Ambari-DDL-MySQL-for-8.x-CREATE.sql"
       TABLE=`grep '^CREATE TABLE' $SQL_FILE | head -1 | awk -F"CREATE TABLE"  '{print $2}' | awk -F"(" '{print $1}'`
       echo "DESC $TABLE;" | $MYSQL_COMMAND > /dev/null 2>&1

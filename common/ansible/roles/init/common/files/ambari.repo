@@ -1,6 +1,6 @@
 [eub]
 name=custom repo
-baseurl=http://dockerize-ambari-yum-repo-1/repo
+baseurl=http://ambari-yum-repo.example.com/repo
 path=/
 enabled=1
 gpgcheck=0

@@ -1,7 +1,7 @@
 ---
 - name: Copy self-signed certificate
   ansible.builtin.copy:
-    src: public.cert
+    src: fullchain.crt
     dest: /etc/pki/ca-trust/source/anchors
     mode: "0600"
 - name: Trust self-signed certificate
