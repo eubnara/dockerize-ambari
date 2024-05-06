@@ -1,14 +1,18 @@
 # dockerize-ambari
 
+- https://github.com/containers/podman-compose
+
 ```
-$ docker compose up --build --no-recreate
+# for FreeIPA
+sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
 
-
+# for FreeIPA server container, use podman
+$ podman-compose up --build --no-recreate
 
 # clean way
-$ docker compose down
+$ podman-compose down
 # remove related volumes if necessary
-$ docker compose up --build
+$ podman-compose up --build
 ```
 
 ## build rpms using apache/bigtop
@@ -42,7 +46,7 @@ $ git lfs track yum-repo/rpm/*
 
 ![configure-repo](images/configure-repo.png)
 ```
-http://dockerize-ambari-yum-repo-1/repo
+http://ambari-yum-repo.example.com/repo
 ```
 
 ## Install Options
@@ -56,19 +60,19 @@ http://dockerize-ambari-yum-repo-1/repo
 
 ![configure-kerberos-1](images/configure-kerberos-1.png)
 ![configure-kerberos-2](images/configure-kerberos-2.png)
+![configure-kerberos-3](images/configure-kerberos-3.png)
+
 
 
 ```
-KDC hosts: apache-ds.example.com:60088
+KDC hosts: ipa.example.com:88
 Realm name: EXAMPLE.COM
-LDAP url: ldaps://apache-ds.example.com:10636
-Container DN: ou=services,dc=example,dc=com
 Domains: .example.com,example.com
 ```
 ```
-Kadmin host: apache-ds.example.com:60088
-Admin principal: uid=admin,ou=system
-Admin password: secret
+Kadmin host: ipa.example.com:88
+Admin principal: uid=admin,cn=users,cn=accounts,dc=example,dc=com
+Admin password: Secret123
 ```
 
 ```
@@ -78,4 +82,81 @@ aes256-cts-hmac-sha1-96
   renew_lifetime = 7d
   default_tgs_enctypes = {{encryption_types}}
   default_tkt_enctypes = {{encryption_types}}
+```
+
+
+```
+[libdefaults]
+  rdns = false
+  ignore_acceptor_hostname = true
+  allow_weak_crypto = true
+```
+
+![configure-kerberos-4](images/configure-kerberos-4.png)
+
+
+## certificate
+
+```
+ca.crt
+ca.key
+fullchain.crt
+my-service.crt
+my-service.csr
+my-service.key
+my-service.pfx
+openssl.cnf
+```
+
+for `*.example.com` wildcard\
+private key password: `Secret123`\
+`freeipa` needs pkcs12 format, full chain certificate with private key
+
+
+should not use privileged port for datanode because podman uses rootless
+
+https://cwiki.apache.org/confluence/display/HADOOP/Secure+DataNode
+
+```
+# hdfs-site
+dfs.http.policy=HTTPS_ONLY
+dfs.data.transfer.protection=authentication
+dfs.datanode.address=0.0.0.0:9866
+dfs.datanode.http.address=0.0.0.0:9864
+dfs.datanode.https.address=0.0.0.0:9865
+dfs.datanode.ipc.address=0.0.0.0:9867
+dfs.namenode.http-address=ambari-agent-1.example.com:9870
+dfs.namenode.https-address=ambari-agent-1.example.com:9871
+```
+
+
+
+
+![configure-ssl-1](images/configure-ssl-1.png)
+
+```
+ssl.server.keystore.keypassword=Secret123
+ssl.server.keystore.location=/etc/security/serverKeys/keystore.jks
+ssl.server.keystore.password=Secret123
+ssl.server.keystore.type=jks
+ssl.server.truststore.location=/etc/pki/java/cacerts
+ssl.server.truststore.password=changeit
+```
+
+
+
+## troubleshooting
+
+### podman network issue
+
+change cniVersion 1.0.0 to 0.4.0
+
+https://github.com/containers/podman-compose/issues/752#issuecomment-2086374571
+
+
+### https://issues.apache.org/jira/browse/AMBARI-26075
+
+```
+# for all ambari-agent
+ln -snf hadoop-hdfs-datanode.pid hadoop-hdfs-root-datanode.pid
 ```

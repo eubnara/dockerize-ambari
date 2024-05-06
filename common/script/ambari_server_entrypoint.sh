@@ -2,7 +2,7 @@
 
 while true; do
     success=1
-    for target in dockerize-ambari-db-1:3306 dockerize-ambari-yum-repo-1; do
+    for target in ambari-mysql.example.com:3306 ambari-yum-repo.example.com; do
         curl $target >/dev/null 2>&1
         if [[ "$?" != "0" ]]; then
             success=0
