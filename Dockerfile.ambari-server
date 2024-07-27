@@ -2,6 +2,7 @@ FROM centos:7
 LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
 ENV LC_ALL en_US.utf8
+COPY yum-repo/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
 RUN yum -y install python3-devel.x86_64 && \
     pip3 install --upgrade pip && \
     pip3 install --user ansible
