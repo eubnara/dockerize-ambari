@@ -1,6 +1,8 @@
 FROM centos:7
 LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
+COPY yum-repo/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+RUN yum-config-manager --save --setopt=\*.skip_if_unavailable=true && yum clean all
 RUN yum -y install createrepo httpd vim less curl wget
 COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
 COPY yum-repo/rpm /opt/repo
