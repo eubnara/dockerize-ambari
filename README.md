@@ -30,11 +30,11 @@ $ ./gradew realclean bigtop-ambari-mpack-pkg
 ```
 
 
-### using BIGTOP-3.2.0 stack on apache/ambari
+### using BIGTOP-3.3.0 stack on apache/ambari
 
 ```
 $ ./gradlew realclean ambari-pkg
-# Since using BIGTOP-3.2.0 stack, "-PpkgSuffix", -PparentDir=/usr/bigtop is needed
+# Since using BIGTOP-3.3.0 stack, "-PpkgSuffix", -PparentDir=/usr/bigtop is needed
 ## https://issues.apache.org/jira/browse/BIGTOP-3786
 ## https://issues.apache.org/jira/browse/AMBARI-25732
 ## https://github.com/apache/bigtop/pull/1035#issuecomment-1278367103
@@ -44,7 +44,7 @@ $ ./gradlew realclean hadoop-pkg -PpkgSuffix
 $ ./gradlew realclean hadoop-pkg -PpkgSuffix -PparentDir=/usr/bigtop
 $ ./gradlew realclean zookeeper-pkg -PpkgSuffix -PparentDir=/usr/bigtop
 
-# I deploy BIGTOP-3.2.0 stack using customized mpack build
+# I deploy BIGTOP-3.3.0 stack using customized mpack build
 ## https://github.com/eubnara/bigtop/commit/45c2384fc1c9e7cd9cd62195a066dee034fad25e
 $ ./gradew realclean bigtop-ambari-mpack-pkg
 
@@ -90,7 +90,7 @@ Realm name: EXAMPLE.COM
 Domains: .example.com,example.com
 ```
 ```
-Kadmin host: ipa.example.com:88
+Kadmin host: ipa.example.com
 Admin principal: uid=admin,cn=users,cn=accounts,dc=example,dc=com
 Admin password: Secret123
 ```
@@ -113,6 +113,19 @@ aes256-cts-hmac-sha1-96
 ```
 
 ![configure-kerberos-4](images/configure-kerberos-4.png)
+
+
+After "Install Kerberos Client",
+You need to copy `/etc/krb5.conf` from any of ambari-agents to ambari-server in order to contact ipa.example.com.
+
+```
+$ podman cp ambari-agent-1.example.com:/etc/krb5.conf ambari-server.example.com:/etc/krb5.conf
+```
+
+```
+Admin principal: admin@EXAMPLE.COM
+Admin password: Secret123
+```
 
 
 ## certificate

@@ -1,0 +1,4 @@
+- name: Configure ipa-client
+  ansible.builtin.command: ipa-client-install --principal admin@EXAMPLE.COM --password Secret123 --server ipa.example.com --realm EXAMPLE.COM --domain example.com --no-ntp --unattended
+  changed_when: true
+  ignore_errors: true

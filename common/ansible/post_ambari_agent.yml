@@ -5,4 +5,3 @@
   connection: local
   roles:
     - ./post/common
-    - ./post/ambari-server
