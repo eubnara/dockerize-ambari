@@ -1,15 +1,13 @@
-FROM centos:7
+FROM rockylinux:8.9.20231119
 LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
-COPY yum-repo/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
 RUN yum-config-manager --save --setopt=\*.skip_if_unavailable=true && yum clean all
 RUN yum -y install createrepo httpd vim less curl wget
 COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
 COPY yum-repo/rpm /opt/repo
 WORKDIR /opt/repo
-RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/hadoop-3.3.4-2.el7.x86_64.rpm && \
-    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.2.0/hadoop_3_2_0-3.3.4-2.el7.x86_64.rpm && \
-    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/v2.7.6.0.0/ambari-server-2.7.6.0-10.el7.noarch.rpm && \
+RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/hadoop-3.3.6-1.el8.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ambari-server-3.0.0-1.el8.noarch.rpm && \
     createrepo .
 
 CMD [ "httpd", "-D", "FOREGROUND" ]
