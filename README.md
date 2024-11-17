@@ -19,6 +19,17 @@ $ podman-compose up --build
 
 I use `eub` branch in forked repository https://github.com/eubnara/bigtop because sometimes I need to test some patches for Hadoop or Ambari.
 
+build bigtop inside docker container
+```
+git pull https://github.com/eubnara/bigtop eubnara-bigtop
+cd eubnara-bigtop
+git checkout eub-bigtop-3.3.0
+docker run -it --name build-bigtop -v`pwd`:/bigtop --workdir /bigtop bigtop/slaves:3.3.0-rockylinux-8 /bin/bash
+
+# e.g. hadoop build
+./gradlew -PbuildThreads=`nproc` realclean hadoop-pkg
+```
+
 
 ### using BGTP-1.0 on eubnara/bigtop
 
