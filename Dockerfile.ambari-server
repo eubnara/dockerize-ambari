@@ -7,7 +7,7 @@ RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
     yum clean all && \
     yum -y install python39-devel python39-pip && \
     pip3 install --upgrade pip && \
-    pip3 install --user ansible
+    pip3 install --user ansible distro
 ENV LC_ALL en_US.utf8
 ENV PATH "$PATH:/root/.local/bin"
 
