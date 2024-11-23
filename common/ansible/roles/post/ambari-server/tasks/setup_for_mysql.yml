@@ -32,7 +32,7 @@
     cmd: |
       set -o pipefail
       MYSQL_COMMAND="mysql --host=ambari-mysql.example.com --port=3306 --user=ambari --password=ambari ambari"
-      SQL_FILE="/root/script/Ambari-DDL-MySQL-for-8.x-CREATE.sql"
+      SQL_FILE="/root/script/Ambari-DDL-MySQL-for-ambari-3.0.0.0-CREATE.sql"
       TABLE=`grep '^CREATE TABLE' $SQL_FILE | head -1 | awk -F"CREATE TABLE"  '{print $2}' | awk -F"(" '{print $1}'`
       echo "DESC $TABLE;" | $MYSQL_COMMAND > /dev/null 2>&1
       if [[ "$?" -eq "0" ]];then
