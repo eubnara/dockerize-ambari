@@ -31,7 +31,7 @@
 set @version_short = substring_index(@@version, '.', 2);
 set @major = cast(substring_index(@version_short, '.', 1) as SIGNED);
 set @minor = cast(substring_index(@version_short, '.', -1) as SIGNED);
-set @engine_stmt = IF(@major >= 5 AND @minor>=6, 'SET default_storage_engine=INNODB', 'SET storage_engine=INNODB');
+set @engine_stmt = IF((@major >= 5 AND @minor>=6) or @major >= 8, 'SET default_storage_engine=INNODB', 'SET storage_engine=INNODB');
 prepare statement from @engine_stmt;
 execute statement;
 DEALLOCATE PREPARE statement;
@@ -1271,14 +1271,14 @@ INSERT INTO roleauthorization(authorization_id, authorization_name)
   SELECT 'SERVICE.TOGGLE_MAINTENANCE', 'Turn on/off maintenance mode' UNION ALL
   SELECT 'SERVICE.RUN_CUSTOM_COMMAND', 'Perform service-specific tasks' UNION ALL
   SELECT 'SERVICE.MODIFY_CONFIGS', 'Modify configurations' UNION ALL
-  SELECT 'SERVICE.MANAGE_CONFIG_GROUPS', 'Manage configuration `groups`' UNION ALL
+  SELECT 'SERVICE.MANAGE_CONFIG_GROUPS', 'Manage configuration groups' UNION ALL
   SELECT 'SERVICE.MANAGE_ALERTS', 'Manage service-level alerts' UNION ALL
   SELECT 'SERVICE.MOVE', 'Move to another host' UNION ALL
   SELECT 'SERVICE.ENABLE_HA', 'Enable HA' UNION ALL
   SELECT 'SERVICE.TOGGLE_ALERTS', 'Enable/disable service-level alerts' UNION ALL
   SELECT 'SERVICE.ADD_DELETE_SERVICES', 'Add/delete services' UNION ALL
   SELECT 'SERVICE.VIEW_OPERATIONAL_LOGS', 'View service operational logs' UNION ALL
-  SELECT 'SERVICE.SET_SERVICE_USERS_GROUPS', 'Set service users and `groups`' UNION ALL
+  SELECT 'SERVICE.SET_SERVICE_USERS_GROUPS', 'Set service users and groups' UNION ALL
   SELECT 'SERVICE.MANAGE_AUTO_START', 'Manage service auto-start' UNION ALL
   SELECT 'HOST.VIEW_METRICS', 'View metrics' UNION ALL
   SELECT 'HOST.VIEW_STATUS_INFO', 'View status information' UNION ALL
@@ -1293,7 +1293,7 @@ INSERT INTO roleauthorization(authorization_id, authorization_name)
   SELECT 'CLUSTER.VIEW_ALERTS', 'View cluster-level alerts' UNION ALL
   SELECT 'CLUSTER.MANAGE_CREDENTIALS', 'Manage external credentials' UNION ALL
   SELECT 'CLUSTER.MODIFY_CONFIGS', 'Modify cluster configurations' UNION ALL
-  SELECT 'CLUSTER.MANAGE_CONFIG_GROUPS', 'Manage cluster config `groups`' UNION ALL
+  SELECT 'CLUSTER.MANAGE_CONFIG_GROUPS', 'Manage cluster config groups' UNION ALL
   SELECT 'CLUSTER.MANAGE_ALERTS', 'Manage cluster-level alerts' UNION ALL
   SELECT 'CLUSTER.MANAGE_USER_PERSISTED_DATA', 'Manage cluster-level user persisted data' UNION ALL
   SELECT 'CLUSTER.TOGGLE_ALERTS', 'Enable/disable cluster-level alerts' UNION ALL
@@ -1308,7 +1308,7 @@ INSERT INTO roleauthorization(authorization_id, authorization_name)
   SELECT 'AMBARI.MANAGE_SETTINGS', 'Manage administrative settings' UNION ALL
   SELECT 'AMBARI.MANAGE_CONFIGURATION', 'Manage ambari configuration' UNION ALL
   SELECT 'AMBARI.MANAGE_USERS', 'Manage users' UNION ALL
-  SELECT 'AMBARI.MANAGE_GROUPS', 'Manage `groups`' UNION ALL
+  SELECT 'AMBARI.MANAGE_GROUPS', 'Manage groups' UNION ALL
   SELECT 'AMBARI.MANAGE_VIEWS', 'Manage Ambari Views' UNION ALL
   SELECT 'AMBARI.ASSIGN_ROLES', 'Assign roles' UNION ALL
   SELECT 'AMBARI.MANAGE_STACK_VERSIONS', 'Manage stack versions' UNION ALL
@@ -1530,7 +1530,7 @@ INSERT INTO adminprivilege (privilege_id, permission_id, resource_id, principal_
   (1, 1, 1, 1);
 
 INSERT INTO metainfo(metainfo_key, metainfo_value) VALUES
-  ('version','2.7.6');
+  ('version','3.0.0.0');
 
 -- Quartz tables
 

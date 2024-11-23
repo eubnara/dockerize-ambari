@@ -22,7 +22,6 @@ yum-repo/rpm/hadoop-yarn-router-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge
 yum-repo/rpm/hadoop-hdfs-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop-libhdfs-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop-libhdfspp-debuginfo-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
-yum-repo/rpm/ambari-agent-3.0.0-1.el8.noarch.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop-conf-pseudo-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop-hdfs-journalnode-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop-yarn-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
@@ -47,3 +46,4 @@ yum-repo/rpm/hadoop-yarn-debuginfo-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs me
 yum-repo/rpm/hadoop-yarn-proxyserver-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/zookeeper-3.8.4-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 *.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ambari-agent-3.0.0.0-1.el8.noarch.rpm filter=lfs diff=lfs merge=lfs -text
