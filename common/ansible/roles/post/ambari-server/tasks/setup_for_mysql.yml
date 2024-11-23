@@ -2,7 +2,7 @@
 - name: Install mysql-community-client
   ansible.builtin.yum:
     name:
-      - mysql-community-client
+      - mysql
     disable_gpg_check: true
 - name: Create link to mysql 8.x connector java
   ansible.builtin.file:

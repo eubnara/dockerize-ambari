@@ -1,11 +1,13 @@
 FROM rockylinux:8.9.20231119
 LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
-ENV LC_ALL en_US.utf8
-RUN yum-config-manager --save --setopt=\*.skip_if_unavailable=true && yum clean all
-RUN yum -y install python3-devel.x86_64 && \
+RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
+    yum config-manager --save --setopt=\*.skip_if_unavailable=true && \
+    yum clean all && \
+    yum -y install python39-devel python39-pip && \
     pip3 install --upgrade pip && \
     pip3 install --user ansible
+ENV LC_ALL en_US.utf8
 ENV PATH "$PATH:/root/.local/bin"
 
 # COPY common/rpm /root/rpm

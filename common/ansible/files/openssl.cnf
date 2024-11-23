@@ -1,6 +1,6 @@
 [req]
 default_bits = 2048
-encrypt_key  = no
+encrypt_key  = no # Change to encrypt the private key using des3 or similar
 default_md   = sha256
 prompt       = no
 utf8         = yes
@@ -31,4 +31,5 @@ subjectAltName       = @alt_names
 # Alternative names are specified as IP.# and DNS.# for IP addresses and
 # DNS accordingly. 
 [alt_names]
+IP.1  = 1.2.3.4
 DNS.1 = *.example.com
