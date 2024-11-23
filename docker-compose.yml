@@ -78,10 +78,12 @@ services:
   ipa:
     hostname: ipa.example.com
     container_name: ipa.example.com
-    image: docker.io/freeipa/freeipa-server:rocky-9
+    image: docker.io/freeipa/freeipa-server:rocky-9-4.12.2
     environment:
       PASSWORD: Secret123
-    command: "-U -n example.com -r EXAMPLE.COM --dirsrv-cert-file /data/root/my-service.pfx --dirsrv-pin Secret123 --http-cert-file /data/root/my-service.pfx --http-pin Secret123 --no-pkinit"
+      DEBUG_TRACE: 1
+      DEBUG_NO_EXIT: 1
+    command: "ipa-server-install -U -p Secret123 -a Secret123 -n example.com -r EXAMPLE.COM --dirsrv-cert-file /data/root/my-service.pfx --dirsrv-pin Secret123 --http-cert-file /data/root/my-service.pfx --http-pin Secret123 --no-pkinit"
     ports:
       - "80:80"
       - "443:443"

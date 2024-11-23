@@ -187,7 +187,49 @@ ssl.server.truststore.location=/etc/pki/java/cacerts
 ssl.server.truststore.password=changeit
 ```
 
+### how to create certificates
 
+I referred to https://gist.github.com/sethvargo/81227d2316207b7bd110df328d83fad8.
+I changed something as follows. Changed script is on `bin/create-certs.sh`
+
+```diff
+[alt_names]
++ DNS.1 = *.example.com
+
+
+openssl req \
+  -new \
+  -newkey rsa:2048 \
++  -days 36500 \
+-  -days 120 \
+-  -nodes \
+  -x509 \
+  -subj "/C=US/ST=California/L=The Cloud/O=My Company CA" \
+  -keyout "${DIR}/ca.key" \
+  -out "${DIR}/ca.crt"
+```
+```
+cd bin
+bash create-certs.sh
+```
+
+After remove `-nodes` I type password `Secret123` all the time.
+
+I create `fullchain.crt`, `my-service.pfx`, `my-service.jks` like:
+```
+$ cat my-service.crt ca.crt > fullchain.crt
+$ openssl pkcs12 -export -in fullchain.crt -inkey my-service.key -out my-service.pfx
+$ keytool -importkeystore -srckeystore my-service.pfx -srcstoretype pkcs12 -destkeystore my-service.jks -deststoretype jks
+Importing keystore my-service.pfx to my-service.jks...
+Enter destination keystore password:
+Re-enter new password:
+Enter source keystore password:
+Entry for alias 1 successfully imported.
+Import command completed:  1 entries successfully imported, 0 entries failed or cancelled
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore my-service.jks -destkeystore my-service.jks -deststoretype pkcs12".
+```
 
 ## troubleshooting
 

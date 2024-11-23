@@ -7,7 +7,7 @@
       - bigtop-groovy
       - bigtop-jsvc
       - bigtop-utils
-      - mysql80-community-release-el7-6
+      - mysql
     state: present
 - name: Add java.home to ambari.properties
   ansible.builtin.lineinfile:
