@@ -2,7 +2,9 @@ FROM rockylinux:8.9.20231119
 LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
 RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
-    yum config-manager --save --setopt=\*.skip_if_unavailable=true && yum clean all && \
+    yum config-manager --save --setopt=\*.skip_if_unavailable=true && \
+    yum config-manager --set-enabled powertools && \
+    yum clean all && \
     yum -y install createrepo httpd vim less curl wget
 ENV LC_ALL en_US.utf8
 COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf

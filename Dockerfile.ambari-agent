@@ -3,6 +3,7 @@ LABEL org.opencontainers.image.authors="eubnara@gmail.com"
 
 RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
     yum config-manager --save --setopt=\*.skip_if_unavailable=true && \
+    yum config-manager --set-enabled powertools && \
     yum clean all && \
     yum -y install python39-devel python39-pip && \
     pip3 install --upgrade pip && \
