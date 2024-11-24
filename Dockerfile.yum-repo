@@ -10,6 +10,8 @@ COPY yum-repo/rpm /opt/repo
 WORKDIR /opt/repo
 RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/hadoop_3_3_0-3.3.6-1.el8.x86_64.rpm && \
     curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ambari-server-3.0.0.0-1.el8.noarch.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ranger_3_3_0-admin-2.4.0-1.el8.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ranger_3_3_0-kms-2.4.0-1.el8.x86_64.rpm && \
     createrepo .
 
 CMD [ "httpd", "-D", "FOREGROUND" ]

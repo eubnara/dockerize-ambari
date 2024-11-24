@@ -84,3 +84,10 @@ yum-repo/rpm/hadoop_3_3_0-hdfs-fuse-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs m
 yum-repo/rpm/hadoop_3_3_0-hdfs-journalnode-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop_3_3_0-libhdfspp-debuginfo-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
 yum-repo/rpm/hadoop_3_3_0-mapreduce-3.3.6-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-hdfs-plugin-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-hive-plugin-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-knox-plugin-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-tagsync-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-usersync-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-yarn-plugin-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
+yum-repo/rpm/ranger_3_3_0-hbase-plugin-2.4.0-1.el8.x86_64.rpm filter=lfs diff=lfs merge=lfs -text
