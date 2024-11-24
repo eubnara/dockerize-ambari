@@ -26,7 +26,7 @@ services:
       - "5001:5001" # for remote jvm debugging
   ambari-agent-2:
     init: true
-    image: eubnara/ambari-agent:3.0.0-1
+    image: eubnara/ambari-agent:3.0.0.0-1
     hostname: ambari-agent-2.example.com
     container_name: ambari-agent-2.example.com
     networks:
@@ -38,7 +38,7 @@ services:
       - "5002:5002" # for remote jvm debugging
   ambari-agent-3:
     init: true
-    image: eubnara/ambari-agent:3.0.0-1
+    image: eubnara/ambari-agent:3.0.0.0-1
     hostname: ambari-agent-3.example.com
     container_name: ambari-agent-3.example.com
     networks:
