@@ -52,6 +52,7 @@ $ ./gradlew realclean ambari-pkg
 ## https://github.com/apache/bigtop/pull/1038/files
 ## https://github.com/apache/ambari/blob/e68b7d39884895aec24198a13557666c815b7107/ambari-server/src/main/resources/stacks/BIGTOP/3.2.0/configuration/cluster-env.xml#L241
 $ ./gradlew realclean hadoop-pkg -PpkgSuffix
+$ ./gradlew realclean hadoop-pkg -PpkgSuffix -PbuildThreads=`nproc`
 $ ./gradlew realclean hadoop-pkg -PpkgSuffix -PparentDir=/usr/bigtop
 $ ./gradlew realclean zookeeper-pkg -PpkgSuffix -PparentDir=/usr/bigtop
 
