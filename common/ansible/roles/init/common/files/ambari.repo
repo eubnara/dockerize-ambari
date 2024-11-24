@@ -1,0 +1,7 @@
+[eub]
+name=custom repo
+baseurl=http://ambari-yum-repo.example.com/repo
+path=/
+enabled=1
+gpgcheck=0
+priority=1

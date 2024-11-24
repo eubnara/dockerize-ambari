@@ -1,0 +1,7 @@
+---
+- name: Somethings to do after launching the container
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - ./post/common

@@ -1,0 +1,108 @@
+services:
+  ambari-server:
+    init: true
+    image: eubnara/ambari-server:3.0.0.0-1
+    hostname: ambari-server.example.com
+    container_name: ambari-server.example.com
+    networks:
+      example.com:
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-server
+    ports:
+      - "5005:5005" # for remote jvm debugging
+      - "8080:8080"
+  ambari-agent-1:
+    init: true
+    image: eubnara/ambari-agent:3.0.0.0-1
+    hostname: ambari-agent-1.example.com
+    container_name: ambari-agent-1.example.com
+    networks:
+      example.com:
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5001:5001" # for remote jvm debugging
+  ambari-agent-2:
+    init: true
+    image: eubnara/ambari-agent:3.0.0.0-1
+    hostname: ambari-agent-2.example.com
+    container_name: ambari-agent-2.example.com
+    networks:
+      example.com:
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5002:5002" # for remote jvm debugging
+  ambari-agent-3:
+    init: true
+    image: eubnara/ambari-agent:3.0.0.0-1
+    hostname: ambari-agent-3.example.com
+    container_name: ambari-agent-3.example.com
+    networks:
+      example.com:
+    build:
+      context: .
+      dockerfile: Dockerfile.ambari-agent
+    ports:
+      - "5003:5003" # for remote jvm debugging
+  db:
+    init: true
+    image: docker.io/mysql:5.7
+    hostname: ambari-mysql.example.com
+    container_name: ambari-mysql.example.com
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ambari
+      MYSQL_USER: ambari
+      MYSQL_PASSWORD: ambari
+    volumes:
+      - type: volume
+        source: ambari-mysql
+        target: /var/lib/mysql
+    networks:
+      example.com:
+  yum-repo:
+    image: eubnara/yum-repo:1.0.0
+    hostname: ambari-yum-repo.example.com
+    container_name: ambari-yum-repo.example.com
+    build:
+      context: .
+      no_cache: true
+      dockerfile: Dockerfile.yum-repo
+    networks:
+      example.com:
+
+  ipa:
+    hostname: ipa.example.com
+    container_name: ipa.example.com
+    image: docker.io/freeipa/freeipa-server:rocky-9-4.12.2
+    environment:
+      PASSWORD: Secret123
+      DEBUG_TRACE: 1
+      # DEBUG_NO_EXIT: 1
+    command: "ipa-server-install -U -p Secret123 -a Secret123 -n example.com -r EXAMPLE.COM --dirsrv-cert-file /data/root/my-service.pfx --dirsrv-pin Secret123 --http-cert-file /data/root/my-service.pfx --http-pin Secret123 --no-pkinit"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "88:88"
+      - "464:464"
+      - "389:389"
+      - "636:636"
+    volumes:
+      - type: volume
+        source: ipa-data
+        target: /data
+      - ./common/ansible/files/my-service.pfx:/data/root/my-service.pfx:ro
+    networks:
+      example.com:
+
+volumes:
+  ambari-mysql:
+  ipa-data:
+
+networks:
+  example.com:
+    name: example.com

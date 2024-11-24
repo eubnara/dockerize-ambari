@@ -1,0 +1,8 @@
+---
+- name: Initialize ambari server
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - ./init/common
+    - ./init/ambari-server

@@ -1,0 +1,26 @@
+---
+- name: Install rpms for ambari server
+  ansible.builtin.yum:
+    name:
+      - ambari-server
+      - bigtop-ambari-mpack
+      - bigtop-groovy
+      - bigtop-jsvc
+      - bigtop-utils
+      - mysql
+    state: present
+- name: Add java.home to ambari.properties
+  ansible.builtin.lineinfile:
+    path: /etc/ambari-server/conf/ambari.properties
+    search_string: 'java.home'
+    line: java.home=/usr/lib/jvm/java-1.8.0-openjdk
+- name: Remove hortonworks
+  ansible.builtin.replace:
+    path: /etc/ambari-server/conf/ambari.properties
+    regexp: '^(.*)hortonworks(.*)$'
+    replace: \g<1>example\g<2>
+- name: Do somethings related to mysql setup
+  ansible.builtin.import_tasks: setup_for_mysql.yml
+- name: Install mpack
+  ansible.builtin.import_tasks: install_mpack.yml
+...

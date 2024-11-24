@@ -1,0 +1,22 @@
+FROM rockylinux:8.9.20231119
+LABEL org.opencontainers.image.authors="eubnara@gmail.com"
+
+
+RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
+    yum config-manager --save --setopt=\*.skip_if_unavailable=true && \
+    yum config-manager --set-enabled powertools && \
+    yum clean all && \
+    yum -y install python39-devel python39-pip && \
+    pip3 install --upgrade pip && \
+    pip3 install --user ansible distro rpm
+ENV LC_ALL en_US.utf8
+ENV PATH "$PATH:/root/.local/bin"
+
+COPY yum-repo/rpm /root/rpm
+COPY common/ansible /root/ansible
+COPY common/script /root/script
+COPY common/lib /root/lib
+
+RUN ansible-playbook /root/ansible/init_ambari_server.yml
+
+CMD [ "bash", "/root/script/ambari_server_entrypoint.sh" ]

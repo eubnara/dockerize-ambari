@@ -1,0 +1,10 @@
+---
+- name: Initialize Apache Directory Server
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - ./init/common
+    - role: ./init/apacheds
+      vars:
+        APACHEDS_VERSION: 2.0.0.AM26

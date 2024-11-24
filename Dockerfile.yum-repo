@@ -1,0 +1,19 @@
+FROM rockylinux:8.9.20231119
+LABEL org.opencontainers.image.authors="eubnara@gmail.com"
+
+RUN yum -y install 'dnf-command(config-manager)' glibc-langpack-en && \
+    yum config-manager --save --setopt=\*.skip_if_unavailable=true && \
+    yum config-manager --set-enabled powertools && \
+    yum clean all && \
+    yum -y install createrepo httpd vim less curl wget
+ENV LC_ALL en_US.utf8
+COPY yum-repo/repo.conf /etc/httpd/conf.d/repo.conf
+COPY yum-repo/rpm /opt/repo
+WORKDIR /opt/repo
+RUN curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/hadoop_3_3_0-3.3.6-1.el8.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ambari-server-3.0.0.0-1.el8.noarch.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ranger_3_3_0-admin-2.4.0-1.el8.x86_64.rpm && \
+    curl -OL https://github.com/eubnara/dockerize-ambari/releases/download/BIGTOP-3.3.0/ranger_3_3_0-kms-2.4.0-1.el8.x86_64.rpm && \
+    createrepo .
+
+CMD [ "httpd", "-D", "FOREGROUND" ]

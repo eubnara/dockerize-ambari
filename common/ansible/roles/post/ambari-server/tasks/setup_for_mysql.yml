@@ -1,0 +1,45 @@
+---
+- name: Install mysql-community-client
+  ansible.builtin.yum:
+    name:
+      - mysql
+    disable_gpg_check: true
+- name: Create link to mysql 8.x connector java
+  ansible.builtin.file:
+    # mysql connector 8 은 5.6, 5.7 접속이 가능하다. https://www.lesstif.com/dbms/mysql-jdbc-driver-14090356.html
+    src: /root/lib/mysql-connector-java-8.0.30.jar
+    # /usr/share/java/mysql-connector-java.jar 라는 이름을 쓰지 않으면, server.jdbc.driver.path 설정도 필요하다.
+    dest: /usr/share/java/mysql-connector-java.jar
+    state: link
+- name: Setup jdbc for ambari
+  ansible.builtin.command:
+    cmd: ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
+  changed_when: true
+- name: Setup db for ambari
+  ansible.builtin.shell:
+    cmd: |
+      ambari-server setup --silent --database=mysql --databasehost=ambari-mysql.example.com \
+      --databaseport=3306  --databasename=ambari --databaseusername=ambari --databasepassword=ambari
+  changed_when: true
+- name: Change jdbc driver in ambari.properties (to support mysql 8.x)
+  ansible.builtin.replace:
+    path: /etc/ambari-server/conf/ambari.properties
+    regexp: '^(.*)=com\.mysql\.jdbc\.Driver'
+    replace: \g<1>=com.mysql.cj.jdbc.Driver
+- name: Run MySQL DDL for Ambari server
+  ansible.builtin.shell:
+  # Ambari-DDL-MySQL-CREATE.sql only changed groups to `groups`
+    cmd: |
+      set -o pipefail
+      MYSQL_COMMAND="mysql --host=ambari-mysql.example.com --port=3306 --user=ambari --password=ambari ambari"
+      SQL_FILE="/root/script/Ambari-DDL-MySQL-for-ambari-3.0.0.0-CREATE.sql"
+      TABLE=`grep '^CREATE TABLE' $SQL_FILE | head -1 | awk -F"CREATE TABLE"  '{print $2}' | awk -F"(" '{print $1}'`
+      echo "DESC $TABLE;" | $MYSQL_COMMAND > /dev/null 2>&1
+      if [[ "$?" -eq "0" ]];then
+        exit 0
+      fi
+      echo "SOURCE $SQL_FILE;  " | $MYSQL_COMMAND || exit 1
+      echo "changed"
+  register: mysql_ddl
+  changed_when: "'changed' in mysql_ddl.stdout"
+...
